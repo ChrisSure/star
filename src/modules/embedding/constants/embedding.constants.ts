@@ -1,0 +1,4 @@
+export const EMBEDDING_CONSTANTS = {
+    DEFAULT_VOCAB_SIZE: 32000,
+    DEFAULT_D_MODEL: 128
+} as const;
