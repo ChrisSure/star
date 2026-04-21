@@ -13,6 +13,7 @@ const tokenizer = new Tokenizer(dbPool);
 
 app.get('/', async (req: Request, res: Response) => {
     const result = await tokenizer.encode('This is an example of the string Taras.');
+    //const result = await tokenizer.decode([1, 4, 6]);
     res.send(result);
 });
 

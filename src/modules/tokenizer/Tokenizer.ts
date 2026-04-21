@@ -23,6 +23,26 @@ export class Tokenizer {
     }
 
     /**
+     * Converts an array of token IDs back into a single string.
+     * It retrieves the corresponding word for each ID from the database and joins them.
+     * 
+     * @param ids An array of token IDs.
+     * @returns A promise that resolves to the decoded string.
+     */
+    public async decode(ids: number[]): Promise<string> {
+        const words: string[] = [];
+        
+        for (const id of ids) {
+            const token = await this.tokenRepository.getTokenById(id);
+            if (token && token.title) {
+                words.push(token.title);
+            }
+        }
+        
+        return words.join(' ');
+    }
+
+    /**
      * Converts an array of words into their corresponding token IDs.
      * 
      * @param words An array of words and punctuation marks.

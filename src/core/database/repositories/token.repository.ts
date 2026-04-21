@@ -23,6 +23,20 @@ export class TokenRepository {
     }
 
     /**
+     * Retrieves a token row from the database by its ID.
+     * @param id The ID to search for.
+     * @returns The token row data or null if not found.
+     */
+    public async getTokenById(id: number): Promise<RowDataPacket | null> {
+        const [rows] = await this.pool.execute<RowDataPacket[]>(
+            TOKEN_QUERIES.GET_TOKEN_BY_ID,
+            [id]
+        );
+        
+        return rows[0] ?? null;
+    }
+
+    /**
      * Saves a new token to the database.
      * @param word The word to save.
      * @returns The ID of the inserted token.
