@@ -4,7 +4,7 @@ import { EMBEDDING_CONSTANTS } from './constants/embedding.constants.js';
 export class EmbeddingLayer {
     public readonly vocabSize: number;
     public readonly dModel: number;
-    private weights: Float32Array;
+    private weights!: Float32Array;
 
     constructor(
         vocabSize: number = EMBEDDING_CONSTANTS.DEFAULT_VOCAB_SIZE, 
@@ -12,6 +12,13 @@ export class EmbeddingLayer {
     ) {
         this.vocabSize = vocabSize;
         this.dModel = dModel;
+        this.allocateWeights();
+    }
+
+    /**
+     * Allocates the memory for the weights array.
+     */
+    private allocateWeights(): void {
         this.weights = new Float32Array(this.vocabSize * this.dModel);
     }
 
@@ -28,7 +35,6 @@ export class EmbeddingLayer {
             await fs.access(filePath);
             await this.loadFromFile(filePath);
         } catch (error: any) {
-            // If file doesn't exist (ENOENT), generate and save
             if (error.code === 'ENOENT') {
                 this.initializeRandomWeights();
                 await this.saveToFile(filePath);
@@ -45,7 +51,6 @@ export class EmbeddingLayer {
     private initializeRandomWeights(): void {
         const limit = Math.sqrt(2.0 / (this.vocabSize + this.dModel));
         for (let i = 0; i < this.weights.length; i++) {
-            // Random value between -limit and limit
             this.weights[i] = (Math.random() * 2 - 1) * limit;
         }
     }
@@ -62,7 +67,6 @@ export class EmbeddingLayer {
             throw new Error(`Invalid file size. Expected ${expectedBytes} bytes, got ${buffer.length} bytes.`);
         }
 
-        // Create a Float32Array view over the buffer
         this.weights = new Float32Array(buffer.buffer, buffer.byteOffset, buffer.length / Float32Array.BYTES_PER_ELEMENT);
     }
 
